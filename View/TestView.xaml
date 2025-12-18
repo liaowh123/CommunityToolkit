@@ -1,0 +1,346 @@
+﻿<UserControl x:Class="CommunityToolkit示例.View.TestView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CommunityToolkit示例.View"
+             xmlns:viewModel="clr-namespace:CommunityToolkit示例.ViewModel" 
+             xmlns:converter="clr-namespace:CommunityToolkit示例.Converter"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800">
+    <UserControl.DataContext>
+        <viewModel:TestViewModel/>
+    </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="BorderBrush" Value="#FFDDDDDD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect ShadowDepth="2" Opacity="0.1" BlurRadius="10"/>
+                </Setter.Value>
+            </Setter>
+            
+        </Style>
+
+        <!-- 按钮样式 -->
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FF3498DB"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF2980B9"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF1C6EA4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SuccessButtonStyle" BasedOn="{StaticResource PrimaryButtonStyle}" TargetType="Button">
+            <Setter Property="Background" Value="#FF2ECC71"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF27AE60"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="DangerButtonStyle" BasedOn="{StaticResource PrimaryButtonStyle}" TargetType="Button">
+            <Setter Property="Background" Value="#FFE74C3C"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFC0392B"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="WarningButtonStyle" BasedOn="{StaticResource PrimaryButtonStyle}" TargetType="Button">
+            <Setter Property="Background" Value="#FFF39C12"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFD68910"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converter:PlcStatusToBrushConverter x:Key="PlcStatusToBrushConverter"/>
+    </UserControl.Resources>
+
+    <StackPanel>
+        <Border Style="{StaticResource CardStyle}">
+            <StackPanel>
+                <TextBlock Text="通讯测试" 
+                           FontSize="18" 
+                           FontWeight="SemiBold" 
+                           Foreground="#FF2C3E50"
+                           Margin="0,0,0,20">
+                    <Run Text="&#xEB44;" FontFamily="Segoe MDL2 Assets"/>
+                </TextBlock>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- PLC通讯测试 -->
+                    <Border Grid.Column="0" Style="{StaticResource CardStyle}" Margin="0">
+                        <StackPanel >
+                            <TextBlock Text="PLC通讯测试" FontSize="16" FontWeight="SemiBold"/>
+
+                            <StackPanel>
+                                <TextBlock Text="连接状态" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Width="10" Height="10" CornerRadius="5" 
+                                            Background="{Binding PlcStatus, Converter={StaticResource PlcStatusToBrushConverter}}"/>
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding PlcStatus}"/>
+
+                                </StackPanel>
+                            </StackPanel>
+
+                            <StackPanel>
+                                <TextBlock Text="最后通讯时间" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                <TextBlock>2024-01-15 14:30:25</TextBlock>
+                            </StackPanel>
+
+                            <!-- 读取/写入测试 -->
+                            <Border Background="#FFF8F9FA" Padding="15" CornerRadius="4">
+                                <StackPanel >
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                            <TextBlock Text="存储区" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <TextBox Text="{Binding StorageArea}" Padding="10"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                                            <TextBlock Text="地址" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <TextBox Text="{Binding StartAddress}" Padding="10"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" Margin="0,0,10,0">
+                                            <TextBlock Text="长度_个数"  FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <TextBox Text="{Binding AreaLength}"
+                                                     Padding="10"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="3" Margin="0,0,10,0">
+                                            <TextBlock Text="数据类型" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <!--<TextBox Text="1" Padding="10"/>-->
+                                            <StackPanel>
+                                                <StackPanel Orientation="Vertical" Margin="0,0,0,5">
+                                                    <RadioButton Content="INT" GroupName="DataType" 
+                                                         IsChecked="{Binding IsIntType, Mode=TwoWay}"  Margin="0,0,10,0"/>
+                                                    <RadioButton Content="FLOAT" GroupName="DataType" 
+                                                         IsChecked="{Binding IsFloatType, Mode=TwoWay}"/>
+                                                </StackPanel>
+                                                
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <!--<StackPanel Grid.Column="4" Margin="10,0,0,0">
+                                            <TextBlock Text="当前值" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <TextBox Text="25.6" Padding="10" IsReadOnly="True"/>
+                                        </StackPanel>-->
+                                    </Grid>
+
+                                    <StackPanel>
+                                        <TextBlock Text="当前值" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                        <Grid>
+                                            <TextBox x:Name="ReadValueTextBox" Text="{Binding ReadValue, Mode=OneWay}" IsReadOnly="True"  Padding="10"  VerticalContentAlignment="Center"  />
+                                            <TextBlock Text="读取的值"
+                                                Foreground="#FFAAAAAA"
+                                                IsHitTestVisible="False"
+                                                Margin="14,0,0,0"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left"
+                                                Visibility="{Binding Text.IsEmpty, ElementName=ReadValueTextBox, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                        </Grid>
+                                    </StackPanel>
+
+                                    <StackPanel>
+                                        <TextBlock Text="写入值" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                        <Grid>
+                                            <TextBox x:Name="WriteValueTextBox" Text="{Binding WriteValue, Mode=TwoWay}" Padding="10"  VerticalContentAlignment="Center"  />
+                                            <TextBlock Text="输入要写入的值"
+                                                    Foreground="#FFAAAAAA"
+                                                    IsHitTestVisible="False"
+                                                    Margin="14,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Left"
+                                                    Visibility="{Binding Text.IsEmpty, ElementName=WriteValueTextBox, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                        </Grid>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin=" 0,10,0,0">
+                                        <Button Style="{StaticResource PrimaryButtonStyle}" 
+                                                Content="读取" 
+                                                Margin=" 0,0,10,0"
+                                                Command="{Binding ReadPLCCommand}"/>
+                                                
+                                        <Button Style="{StaticResource SuccessButtonStyle}" 
+                                                Content="写入" 
+                                                Command="{Binding WritePLCCommand}"/>
+                                                
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <StackPanel Orientation="Horizontal" >
+                                <Button Style="{StaticResource PrimaryButtonStyle}" 
+                                        Content="开始监控" 
+                                        Margin=" 0,0,10,0"
+                                        Command="{Binding StartMonitorCommand}"/>
+                                        
+                                <Button Style="{StaticResource DangerButtonStyle}" 
+                                        Content="停止监控" 
+                                        Margin=" 0,0,10,0"
+                                        Command="{Binding StopMonitorCommand}"/>
+                                        
+                                <Button Style="{StaticResource WarningButtonStyle}" 
+                                        Content="清空日志" 
+                                        Command="{Binding ClearLogCommand}"/>
+                                        
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 分隔线 -->
+                    <Rectangle Grid.Column="1" Fill="#FFEEEEEE" Width="1"/>
+
+                    <!-- 扫码枪测试 -->
+                    <Border Grid.Column="2" Style="{StaticResource CardStyle}" Margin="0">
+                        <StackPanel >
+                            <TextBlock Text="扫码枪测试" FontSize="16" FontWeight="SemiBold"/>
+
+                            <StackPanel>
+                                <TextBlock Text="设备状态" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Width="10" Height="10" CornerRadius="5" Background="#FF2ECC71"/>
+                                    <TextBlock VerticalAlignment="Center">正常</TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <StackPanel>
+                                <TextBlock Text="最后扫码时间" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                <TextBlock>2024-01-15 14:30:28</TextBlock>
+                            </StackPanel>
+
+                            <StackPanel>
+                                <TextBlock Text="测试扫码" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="BarcodeTextBox" Grid.Column="0"                                                         
+                                                Padding="10"/>
+                                    <TextBlock  Text="输入或扫描条码"
+                                                Foreground="#FFAAAAAA"
+                                                Margin="14,0,0,0"
+                                                VerticalAlignment="Center"
+                                                IsHitTestVisible="False"
+                                                Visibility="{Binding Text.IsEmpty, ElementName=BarcodeTextBox, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                    <Button Grid.Column="1" 
+                                            Style="{StaticResource SuccessButtonStyle}" 
+                                            Margin="10,0,0,0" 
+                                            Padding="15,10"
+                                            Content="模拟扫码" 
+                                            Command="{Binding SimulateScanCommand }"/>
+                                    
+                                </Grid>
+                            </StackPanel>
+
+                            <StackPanel>
+                                <TextBlock Text="最近扫码记录" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                <Border Background="#FFF8F9FA" 
+                                        Padding="10" 
+                                        CornerRadius="4" 
+                                        MaxHeight="200">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                        <StackPanel>
+                                            <Border Background="White" 
+                                                    Padding="10" 
+                                                    Margin="0,0,0,5" 
+                                                    CornerRadius="4"
+                                                    BorderThickness="0,0,0,4" 
+                                                    BorderBrush="#FF3498DB">
+                                                <StackPanel>
+                                                    <TextBlock>14:30:28 <Bold>P/N:123456789012✓</Bold></TextBlock>
+                                                    <TextBlock FontSize="12" Foreground="#FF7F8C8D">扫码枪-01</TextBlock>
+                                                </StackPanel>
+                                            </Border>
+
+                                            <Border Background="#FFFDEDEC" 
+                                                    Padding="10" 
+                                                    Margin="0,0,0,5" 
+                                                    CornerRadius="4"
+                                                    BorderThickness="0,0,0,4" 
+                                                    BorderBrush="#FFE74C3C">
+                                                <StackPanel>
+                                                    <TextBlock>14:30:25 <Bold>P/N:123456789013✓</Bold></TextBlock>
+                                                    <TextBlock FontSize="12" Foreground="#FF7F8C8D">扫码枪-01 - 重复条码</TextBlock>
+                                                </StackPanel>
+                                            </Border>
+
+                                            <Border Background="White" 
+                                                    Padding="10" 
+                                                    Margin="0,0,0,5" 
+                                                    CornerRadius="4"
+                                                    BorderThickness="0,0,0,4" 
+                                                    BorderBrush="#FF3498DB">
+                                                <StackPanel>
+                                                    <TextBlock>14:30:22 <Bold>P/N:123456789014✓</Bold></TextBlock>
+                                                    <TextBlock FontSize="12" Foreground="#FF7F8C8D">扫码枪-01</TextBlock>
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </Border>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" >
+                                <Button Style="{StaticResource WarningButtonStyle}" 
+                                        Content="清空记录" 
+                                        Margin="0,0,10,0"
+                                        Command="{Binding ClearScanRecordsCommand }"/>
+                                        
+                                <Button Style="{StaticResource PrimaryButtonStyle}" 
+                                        Content="导出记录" 
+                                        Command="{Binding ExportScanRecordsCommand }"/>
+                                        
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>

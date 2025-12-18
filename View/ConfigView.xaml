@@ -1,0 +1,372 @@
+﻿<UserControl x:Class="CommunityToolkit示例.View.ConfigView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CommunityToolkit示例.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="BorderBrush" Value="#FFDDDDDD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect ShadowDepth="2" Opacity="0.1" BlurRadius="10"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 按钮样式 -->
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FF3498DB"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF2980B9"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF1C6EA4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SuccessButtonStyle" BasedOn="{StaticResource PrimaryButtonStyle}" TargetType="Button">
+            <Setter Property="Background" Value="#FF2ECC71"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF27AE60"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DangerButtonStyle" BasedOn="{StaticResource PrimaryButtonStyle}" TargetType="Button">
+            <Setter Property="Background" Value="#FFE74C3C"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFC0392B"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="WarningButtonStyle" BasedOn="{StaticResource PrimaryButtonStyle}" TargetType="Button">
+            <Setter Property="Background" Value="#FFF39C12"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFD68910"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- 选项卡样式 -->
+        <Style x:Key="TabItemStyle" TargetType="TabItem">
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#FF555555"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="border" 
+                                Background="Transparent"
+                                BorderThickness="0,0,0,3"
+                                BorderBrush="Transparent"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header" 
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#FF3498DB"/>
+                                <Setter Property="Foreground" Value="#FF3498DB"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FFF8F9FA"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 数据表格样式 -->
+        <Style x:Key="DataGridStyle" TargetType="DataGrid">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FFDDDDDD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="RowBackground" Value="White"/>
+            <Setter Property="AlternatingRowBackground" Value="#FFF8F9FA"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#FFEEEEEE"/>
+            <Setter Property="VerticalGridLinesBrush" Value="#FFEEEEEE"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserDeleteRows" Value="False"/>
+            <Setter Property="CanUserReorderColumns" Value="True"/>
+            <Setter Property="CanUserResizeRows" Value="False"/>
+            <Setter Property="CanUserSortColumns" Value="True"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="SelectionUnit" Value="FullRow"/>
+        </Style>
+    </UserControl.Resources>
+
+    <StackPanel>
+        <Border Style="{StaticResource CardStyle}">
+            <StackPanel>
+                <TextBlock Text="系统配置" 
+                           FontSize="18" 
+                           FontWeight="SemiBold" 
+                           Foreground="#FF2C3E50"
+                           Margin="0,0,0,20">
+                    <Run Text="&#xE713;" FontFamily="Segoe MDL2 Assets"/>
+                </TextBlock>
+
+                <TabControl>
+                    <TabControl.ItemContainerStyle>
+                        <Style TargetType="TabItem" BasedOn="{StaticResource TabItemStyle}"/>
+                    </TabControl.ItemContainerStyle>
+
+                    <TabItem Header="PLC通讯配置">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel >
+                                <!-- 通讯协议 -->
+                                <StackPanel>
+                                    <TextBlock Text="通讯协议" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                    <StackPanel Orientation="Horizontal" >
+                                        <RadioButton GroupName="Protocol" IsChecked="True">
+                                            <StackPanel Orientation="Horizontal" >
+                                                <TextBlock>Siemens S7</TextBlock>
+                                            </StackPanel>
+                                        </RadioButton>
+                                        <RadioButton GroupName="Protocol">
+                                            <StackPanel Orientation="Horizontal" >
+                                                <TextBlock>Modbus TCP</TextBlock>
+                                            </StackPanel>
+                                        </RadioButton>
+                                        <RadioButton GroupName="Protocol">
+                                            <StackPanel Orientation="Horizontal" >
+                                                <TextBlock>OPC UA</TextBlock>
+                                            </StackPanel>
+                                        </RadioButton>
+                                        <RadioButton GroupName="Protocol">
+                                            <StackPanel Orientation="Horizontal" >
+                                                <TextBlock>Omrom FinsTcp</TextBlock>
+                                            </StackPanel>
+                                        </RadioButton>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <!-- IP地址和端口 -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,0">
+                                        <TextBlock Text="IP地址" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                        <TextBox Text="192.168.1.10" Padding="10"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="0" Grid.Column="1" Margin="10,0,0,0">
+                                        <TextBlock Text="端口号" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                        <TextBox Text="9600" Padding="10"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,15,10,0">
+                                        <TextBlock Text="机架号" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                        <TextBox Text="0" Padding="10"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,15,0,0">
+                                        <TextBlock Text="槽号" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                        <TextBox Text="2" Padding="10"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- 数据块配置 -->
+                                <Border Style="{StaticResource CardStyle}" Margin="0">
+                                    <StackPanel>
+                                        <Border Margin="0,0,0,15" Padding="0,0,0,10" BorderBrush="#FFEEEEEE" BorderThickness="0,0,0,1">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="数据块配置" FontWeight="SemiBold"/>
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal" >
+                                                    <Button Style="{StaticResource SuccessButtonStyle}" 
+                                                            Padding="8,4" 
+                                                            Content="添加" 
+                                                            Margin="0,0,10,0"
+                                                            Command="{Binding AddDataBlockCommand }"/>
+                                                    
+                                                    <Button Style="{StaticResource DangerButtonStyle}" 
+                                                            Padding="8,4" 
+                                                            Content="删除" 
+                                                            Command="{Binding DeleteDataBlockCommand }"/>
+                                                            
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+
+                                        <DataGrid Style="{StaticResource DataGridStyle}" Height="150">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="存储区" Width="50" Binding="{Binding StorageArea}"/>
+                                                <DataGridTextColumn Header="地址" Width="120" Binding="{Binding Address}"/>
+                                                <DataGridTextColumn Header="类型" Width="80" Binding="{Binding Type}"/>
+                                                <DataGridTextColumn Header="描述" Width="*" Binding="{Binding Description}"/>
+                                                <DataGridTextColumn Header="采集频率" Width="100" Binding="{Binding Frequency}"/>
+                                                <DataGridTemplateColumn Header="操作" Width="80">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <Button Style="{StaticResource PrimaryButtonStyle}" 
+                                                                    Padding="8,4" 
+                                                                    Content="编辑" 
+                                                                    Command="{Binding EditDataBlockCommand}"/>
+                                                            
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- 保存按钮 -->
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
+                                    <Button Style="{StaticResource PrimaryButtonStyle}" 
+                                            Content="保存配置" 
+                                            Margin="0,0,10,0"
+                                            Command="{Binding SaveConfigCommand}"/>
+                                            
+                                    
+                                    <Button Style="{StaticResource WarningButtonStyle}" 
+                                            Content="恢复默认" 
+                                            Command="{Binding ResetConfigCommand}"/>
+                                            
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <TabItem Header="扫码枪配置">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel >
+                                <!-- 连接方式 -->
+                                <StackPanel>
+                                    <TextBlock Text="连接方式" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                    <StackPanel Orientation="Horizontal" >
+                                        <RadioButton GroupName="ScannerType" IsChecked="True">
+                                            <StackPanel Orientation="Horizontal" >
+                                                
+                                                <TextBlock>串口通讯</TextBlock>
+                                            </StackPanel>
+                                        </RadioButton>
+                                        <RadioButton GroupName="ScannerType">
+                                            <StackPanel Orientation="Horizontal" >
+                                                
+                                                <TextBlock>USB HID</TextBlock>
+                                            </StackPanel>
+                                        </RadioButton>
+                                        <RadioButton GroupName="ScannerType">
+                                            <StackPanel Orientation="Horizontal" >
+                                                
+                                                <TextBlock>网络通讯</TextBlock>
+                                            </StackPanel>
+                                        </RadioButton>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <!-- 串口设置 -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                        <TextBlock Text="端口号" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                        <TextBox Text="COM3" Padding="10"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" Margin="5,0">
+                                        <TextBlock Text="波特率" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                        <ComboBox SelectedIndex="0" Padding="10">
+                                            <ComboBoxItem>9600</ComboBoxItem>
+                                            <ComboBoxItem>19200</ComboBoxItem>
+                                            <ComboBoxItem>38400</ComboBoxItem>
+                                            <ComboBoxItem>115200</ComboBoxItem>
+                                        </ComboBox>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2" Margin="5,0">
+                                        <TextBlock Text="数据位" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                        <ComboBox SelectedIndex="1" Padding="10">
+                                            <ComboBoxItem>7</ComboBoxItem>
+                                            <ComboBoxItem>8</ComboBoxItem>
+                                        </ComboBox>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="3" Margin="10,0,0,0">
+                                        <TextBlock Text="停止位" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                        <ComboBox SelectedIndex="0" Padding="10">
+                                            <ComboBoxItem>1</ComboBoxItem>
+                                            <ComboBoxItem>1.5</ComboBoxItem>
+                                            <ComboBoxItem>2</ComboBoxItem>
+                                        </ComboBox>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- 复选框 -->
+                                <CheckBox Content="启用数据格式转换" FontWeight="SemiBold"/>
+
+                                <!-- 保存按钮 -->
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
+                                    <Button Style="{StaticResource PrimaryButtonStyle}" 
+                                            Content="保存配置" 
+                                            Margin="0,0,10,0"
+                                            Command="{Binding SaveScannerConfigCommand }"/>
+                                            
+                                    <Button Style="{StaticResource WarningButtonStyle}" 
+                                            Content="恢复默认" 
+                                            Command="{Binding ResetScannerConfigCommand }"/>
+                                            
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+                </TabControl>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>

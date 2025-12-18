@@ -1,0 +1,193 @@
+﻿<UserControl x:Class="CommunityToolkit示例.View.AlarmLogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CommunityToolkit示例.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800">
+    <UserControl.Resources>
+        <!-- 按钮样式 -->
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FF3498DB"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                         Background="{TemplateBinding Background}"
+                         BorderBrush="{TemplateBinding BorderBrush}"
+                         BorderThickness="{TemplateBinding BorderThickness}"
+                         CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center"
+                                       Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF2980B9"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF1C6EA4"/>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SuccessButtonStyle" BasedOn="{StaticResource PrimaryButtonStyle}" TargetType="Button">
+            <Setter Property="Background" Value="#FF2ECC71"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF27AE60"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="WarningButtonStyle" BasedOn="{StaticResource PrimaryButtonStyle}" TargetType="Button">
+            <Setter Property="Background" Value="#FFF39C12"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFD68910"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DangerButtonStyle" BasedOn="{StaticResource PrimaryButtonStyle}" TargetType="Button">
+            <Setter Property="Background" Value="#FFE74C3C"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFC0392B"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </UserControl.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- 标题和按钮 -->
+        <Border Grid.Row="0" Padding="10" Background="#ECF0F1" CornerRadius="5" Margin="0,0,0,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock FontSize="18" FontWeight="SemiBold" Foreground="#2C3E50">
+                        <Run Text="⚠ "/>
+                        <Run Text="系统日志与报警"/>
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Content="🔍 筛选" 
+                            Command="{Binding FilterCommand}"
+                            Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,5,0"/>
+                    <Button Content="📤 导出日志" 
+                            Command="{Binding ExportLogCommand}"
+                            Style="{StaticResource SuccessButtonStyle}" Margin="0,0,5,0"/>
+                    <Button Content="🗑 清空日志" 
+                            Command="{Binding ClearLogCommand}"
+                            Style="{StaticResource DangerButtonStyle}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- 筛选条件 -->
+        <Border Grid.Row="1" Padding="15" Background="White" CornerRadius="5" Margin="0,0,0,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="日志级别" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Content="全部" IsChecked="{Binding IsAllLevelSelected}" Margin="0,0,10,0"/>
+                        <RadioButton Content="报警" IsChecked="{Binding IsAlarmLevelSelected}" Margin="0,0,10,0"/>
+                        <RadioButton Content="警告" IsChecked="{Binding IsWarningLevelSelected}" Margin="0,0,10,0"/>
+                        <RadioButton Content="信息" IsChecked="{Binding IsInfoLevelSelected}"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="时间范围" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <DatePicker SelectedDate="{Binding LogStartDate}" Width="150" Margin="0,0,10,0"/>
+                        <TextBlock Text="到" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <DatePicker SelectedDate="{Binding LogEndDate}" Width="150"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- 日志表格 -->
+        <Border Grid.Row="2" Background="White" CornerRadius="5" Padding="10">
+            <DataGrid ItemsSource="{Binding LogEntries}" 
+                      AutoGenerateColumns="False" 
+                      IsReadOnly="True"
+                      HeadersVisibility="Column">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="级别" Width="80">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Ellipse Width="10" Height="10" Fill="{Binding LevelColor}" Margin="0,0,5,0"/>
+                                    <TextBlock Text="{Binding LevelText}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="时间" Binding="{Binding Time}" Width="100"/>
+                    <DataGridTextColumn Header="来源" Binding="{Binding Source}" Width="100"/>
+                    <DataGridTextColumn Header="内容" Binding="{Binding Message}" Width="*"/>
+                    <DataGridTemplateColumn Header="确认状态" Width="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <!-- 使用一个容器元素包裹所有内容 -->
+                                <Grid>
+                                    <!-- 使用 IsChecked 来切换显示哪个控件 -->
+                                    <Button Content="确认" 
+                                    Command="{Binding DataContext.ConfirmAlarmCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    CommandParameter="{Binding Id}"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Visibility="{Binding IsConfirmed, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=False}"/>
+                                    <TextBlock Text="已确认" Foreground="Green" 
+                                     HorizontalAlignment="Center" VerticalAlignment="Center"
+                                     Visibility="{Binding IsConfirmed, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="操作" Width="80">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="详情" 
+                                        Command="{Binding DataContext.ViewDetailCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding Id}"
+                                        Style="{StaticResource WarningButtonStyle}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+    </Grid>
+</UserControl>

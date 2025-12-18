@@ -1,0 +1,408 @@
+﻿<Window x:Class="CommunityToolkit示例.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CommunityToolkit示例"   
+        xmlns:viewMode="clr-namespace:CommunityToolkit示例.ViewModel"   
+        xmlns:view="clr-namespace:CommunityToolkit示例.View"
+        mc:Ignorable="d"
+        Title="工控数据采集系统 v1.0" 
+        Height="800" Width="1400"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        WindowState="Maximized">
+
+    <Window.DataContext>
+        <viewMode:MainWindowViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+        <!-- 颜色资源 -->
+        
+        <SolidColorBrush x:Key="PrimaryColor" Color="#FF2C3E50"/>
+        <SolidColorBrush x:Key="SecondaryColor" Color="#FF3498DB"/>
+        <SolidColorBrush x:Key="SuccessColor" Color="#FF2ECC71"/>
+        <SolidColorBrush x:Key="WarningColor" Color="#FFF39C12"/>
+        <SolidColorBrush x:Key="DangerColor" Color="#FFE74C3C"/>
+        <SolidColorBrush x:Key="BackgroundBrush" Color="#FFECF0F1"/>
+        <SolidColorBrush x:Key="TextColor" Color="#FF2C3E50"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        
+
+        <!-- 渐变画刷 -->
+        <LinearGradientBrush x:Key="TitleBarGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#FF2C3E50" Offset="0"/>
+            <GradientStop Color="#FF4A6491" Offset="1"/>
+        </LinearGradientBrush>
+
+        <!-- 按钮样式 -->
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FF3498DB"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF2980B9"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF1C6EA4"/>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SuccessButtonStyle" BasedOn="{StaticResource PrimaryButtonStyle}" TargetType="Button">
+            <Setter Property="Background" Value="#FF2ECC71"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF27AE60"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="WarningButtonStyle" BasedOn="{StaticResource PrimaryButtonStyle}" TargetType="Button">
+            <Setter Property="Background" Value="#FFF39C12"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFD68910"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DangerButtonStyle" BasedOn="{StaticResource PrimaryButtonStyle}" TargetType="Button">
+            <Setter Property="Background" Value="#FFE74C3C"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFC0392B"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+                    
+        <!-- 导航项样式 -->
+        <Style x:Key="NavItemStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#FFECF0F1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                Background="Transparent"
+                                BorderThickness="4,0,0,0"
+                                BorderBrush="Transparent"
+                                Padding="{TemplateBinding Padding}"
+                                HorizontalAlignment="Stretch">
+                            <!-- 使用DockPanel确保内容始终向左对齐 -->
+                            <DockPanel HorizontalAlignment="Stretch" LastChildFill="False">
+                                <!-- 图标部分 -->
+                                <ContentPresenter x:Name="iconPresenter" 
+                                        Content="{TemplateBinding Tag}"
+                                        DockPanel.Dock="Left"
+                                        Margin="0,0,10,0"
+                                        HorizontalAlignment="Left"/>
+
+                                <!-- 文本部分 -->
+                                <ContentPresenter x:Name="contentPresenter" 
+                                        Content="{TemplateBinding Content}"
+                                        DockPanel.Dock="Left"
+                                        HorizontalAlignment="Left"/>
+                            </DockPanel>
+
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#3FFFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1AFFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- 专门用于导航按钮的样式 -->
+        <Style x:Key="NavigationButtonStyle" TargetType="Button" BasedOn="{StaticResource NavItemStyle}">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                        Background="Transparent"
+                        BorderThickness="4,0,0,0"
+                        BorderBrush="Transparent"
+                        HorizontalAlignment="Stretch"
+                        Cursor="Hand">
+
+                            <!-- 内容容器 -->
+                            <ContentPresenter x:Name="contentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="Center"
+                                      Margin="{TemplateBinding Padding}"/>
+
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#3FFFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1AFFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        
+
+        <!-- 状态指示器样式 -->
+        <Style x:Key="StatusIndicatorStyle" TargetType="Border">
+            <Setter Property="Width" Value="10"/>
+            <Setter Property="Height" Value="10"/>
+            <Setter Property="CornerRadius" Value="5"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- 标题栏 -->
+        <Border Grid.Row="0" Background="{StaticResource TitleBarGradient}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="20,15">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="24" Foreground="White" Margin="0,0,10,0">&#xE950;</TextBlock>
+                    <TextBlock Text="工控数据采集系统 v1.0" 
+                               Foreground="White" 
+                               FontSize="18" 
+                               FontWeight="SemiBold"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,20,0">
+                    <Button Style="{StaticResource PrimaryButtonStyle}" 
+                            Padding="8" 
+                            MinWidth="30" 
+                            MinHeight="30"
+                            Margin="5,10"
+                            Content="&#xE921;" 
+                            FontFamily="Segoe MDL2 Assets"
+                            ToolTip="最小化"
+                            Command="{Binding MinimizeCommand}"/>
+                    <Button Style="{StaticResource PrimaryButtonStyle}" 
+                            Padding="8" 
+                            MinWidth="30" 
+                            MinHeight="30"
+                            Margin="5,10"
+                            Content="&#xE922;" 
+                            FontFamily="Segoe MDL2 Assets"
+                            ToolTip="最大化"
+                            Command="{Binding MaximizeCommand}"/>
+
+                    <Button Style="{StaticResource DangerButtonStyle}" 
+                            Padding="8" 
+                            MinWidth="30" 
+                            MinHeight="30"
+                            Margin="5,10"
+                            Content="&#xE8BB;" 
+                            FontFamily="Segoe MDL2 Assets"
+                            ToolTip="关闭"
+                            Command="{Binding CloseButtonCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- 主内容区域 -->
+        <Grid Grid.Row="1" Background="{StaticResource BackgroundBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- 侧边栏导航 -->
+            <Border Grid.Column="0" Background="{StaticResource PrimaryColor}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <Button Style="{StaticResource NavigationButtonStyle}" 
+                                x:Name="MainPanelView"
+                                Tag="MainPanel"
+                                Command="{Binding NavButtonCommandCommand}"
+                                CommandParameter="{x:Type view:MainPanelView}">
+                            
+                            <StackPanel Orientation="Horizontal" >
+                                <TextBlock FontFamily="Segoe MDL2 Assets"   Margin="0,0,10,0">&#xE9F9;</TextBlock>
+                                <TextBlock Text="系统监控" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource NavigationButtonStyle}" 
+                                x:Name="DataCollectionView"
+                                Tag="DataPanel"
+                                Command="{Binding NavButtonCommandCommand}"
+                                CommandParameter= "{x:Type view:DataCollectionView}">
+                            
+                            <StackPanel Orientation="Horizontal" >
+                                <TextBlock FontFamily="Segoe MDL2 Assets" Margin="0,0,10,0">&#xF20C;</TextBlock>
+                                <TextBlock Text="数据采集" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource NavigationButtonStyle}" 
+                                x:Name="ConfigView"
+                                Tag="ConfigPanel"
+                                Command="{Binding NavButtonCommandCommand}"
+                                CommandParameter= "{x:Type view:ConfigView}">
+                            
+                            <StackPanel Orientation="Horizontal" >
+                                <TextBlock FontFamily="Segoe MDL2 Assets" Margin="0,0,10,0">&#xE713;</TextBlock>
+                                <TextBlock Text="系统配置" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource NavigationButtonStyle}" 
+                                x:Name="TestView"
+                                Tag="TestPanel"
+                               Command="{Binding NavButtonCommandCommand}"
+                            CommandParameter= "{x:Type view:TestView}">
+
+                            <StackPanel Orientation="Horizontal" >
+                                <TextBlock FontFamily="Segoe MDL2 Assets" Margin="0,0,10,0">&#xEB44;</TextBlock>
+                                <TextBlock Text="通讯测试"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource NavigationButtonStyle}" 
+                                x:Name="ReportStatisticsView"
+                                Tag="ReportsPanel"
+                                 Command="{Binding NavButtonCommandCommand}"
+                                CommandParameter= "{x:Type view:ReportStatisticsView}">
+                                
+                            <StackPanel Orientation="Horizontal" >
+                                <TextBlock FontFamily="Segoe MDL2 Assets" Margin="0,0,10,0">&#xE9D2;</TextBlock>
+                                <TextBlock Text="报表统计" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource NavigationButtonStyle}" 
+                                x:Name="AlarmLogView"
+                                Tag="AlarmsPanel"
+                                Command="{Binding NavButtonCommandCommand}"
+                                CommandParameter= "{x:Type view:AlarmLogView}">
+                                
+                            <StackPanel Orientation="Horizontal" >
+                                <TextBlock FontFamily="Segoe MDL2 Assets" Margin="0,0,10,0">&#xE7BA;</TextBlock>
+                                <TextBlock Text="报警日志" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource NavigationButtonStyle}" 
+                                x:Name="UserManagementView"
+                                Tag="UsersPanel"
+                                Command="{Binding NavButtonCommandCommand}"
+                                CommandParameter= "{x:Type view:UserManagementView}">
+
+                            <StackPanel Orientation="Horizontal" >
+                                <TextBlock FontFamily="Segoe MDL2 Assets" Margin="0,0,10,0">&#xE716;</TextBlock>
+                                <TextBlock Text="用户管理" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource NavigationButtonStyle}" 
+                                x:Name="HelpControlView"
+                                Tag="HelpPanel"
+                                Command="{Binding NavButtonCommandCommand}"
+                                CommandParameter= "{x:Type view:HelpControlView}">
+
+                            <StackPanel Orientation="Horizontal" >
+                                <TextBlock FontFamily="Segoe MDL2 Assets" Margin="0,0,10,0">&#xE897;</TextBlock>
+                                <TextBlock Text="帮助" />
+                            </StackPanel>
+                        </Button>
+                       
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+            <!-- 内容容器区域 -->
+            <Border Grid.Column="1" Padding="20">
+                <ContentControl Content="{Binding CurrentView}" x:Name="ContentArea"/>
+            </Border>
+        </Grid>
+
+        <!-- 状态栏 -->
+        <Border Grid.Row="2" Background="{StaticResource PrimaryColor}" Padding="15,8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" >
+                    <StackPanel Orientation="Horizontal" >
+                        <Border Style="{StaticResource StatusIndicatorStyle}" Margin="0,0,5,0" Background="{StaticResource SuccessColor}"/>
+                        <TextBlock Margin="0,0,5,0"  Foreground="White">系统运行中  </TextBlock>
+                    </StackPanel>
+
+                    <TextBlock Foreground="White">|</TextBlock>
+
+                    <StackPanel Orientation="Horizontal" >
+                        <TextBlock Margin="0,0,5,0"  Foreground="White">数据更新时间:</TextBlock>
+                        <TextBlock x:Name="UpdateTimeText" Margin="0,0,5,0" Foreground="White" FontWeight="SemiBold">14:30:30</TextBlock>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" >
+                    <StackPanel Orientation="Horizontal" >
+                        <TextBlock FontFamily="Segoe MDL2 Assets" Margin="0,0,5,0" Foreground="White">&#xF20C;</TextBlock>
+                        <TextBlock Margin="0,0,5,0" Foreground="White">数据总量: 12,345 条</TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" >
+                        <TextBlock Margin="0,0,5,0" FontFamily="Segoe MDL2 Assets" Foreground="White">&#xE950;</TextBlock>
+                        <TextBlock Margin="0,0,5,0" Foreground="White">CPU使用率: 24%</TextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+
+</Window>
