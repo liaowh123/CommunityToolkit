@@ -4,8 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CommunityToolkit示例.View"
+             xmlns:viewModel="clr-namespace:CommunityToolkit示例.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
+    <UserControl.DataContext>
+        <viewModel:ConfigViewModel/>
+    </UserControl.DataContext>
+
     <UserControl.Resources>
         <Style x:Key="CardStyle" TargetType="Border">
             <Setter Property="Background" Value="White"/>
@@ -277,7 +282,7 @@
                         </ScrollViewer>
                     </TabItem>
 
-                    <TabItem Header="扫码枪配置">
+                    <TabItem Header="扫码枪/串口配置">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <StackPanel >
                                 <!-- 连接方式 -->
@@ -307,7 +312,11 @@
 
                                 <!-- 串口设置 -->
                                 <Grid>
-                                    <Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions  >
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="*"/>
@@ -316,7 +325,20 @@
 
                                     <StackPanel Grid.Column="0" Margin="0,0,10,0">
                                         <TextBlock Text="端口号" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                        <TextBox Text="COM3" Padding="10"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <ComboBox ItemsSource="{Binding AvailableSerialPorts}"
+                                                      SelectedItem="{Binding SelectedSerialPort, Mode=TwoWay}"
+                                                      Width="140"
+                                                      Padding="6"
+                                                      HorizontalAlignment="Left"
+                                                      IsEditable="False"
+                                                      DisplayMemberPath="." />
+                                            <Button Content="刷新"
+                                                    Command="{Binding RefreshSerialPortsCommand}"
+                                                    Margin="8,0,0,0"
+                                                    Padding="8,4"
+                                                    Style="{StaticResource PrimaryButtonStyle}"/>
+                                        </StackPanel>
                                     </StackPanel>
 
                                     <StackPanel Grid.Column="1" Margin="5,0">
@@ -345,6 +367,22 @@
                                             <ComboBoxItem>2</ComboBoxItem>
                                         </ComboBox>
                                     </StackPanel>
+
+                                    <StackPanel Grid.Column="0" Margin="0,70,10,0">
+                                        <TextBlock Text="采集间隔（毫秒）" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                        <TextBox Text="{Binding PollingLnterval}" Padding="10"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" Margin="5,0">
+                                        <TextBlock Text="超时（秒）" FontWeight="SemiBold" Margin="0,70,0,5"/>
+                                        <TextBox Text="1" Padding="10"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2" Margin="5,0">
+                                        <TextBlock Text="重试次数" FontWeight="SemiBold" Margin="0,70,0,5"/>
+                                        <TextBox Text="1" Padding="10"/>
+                                    </StackPanel>
+
                                 </Grid>
 
                                 <!-- 复选框 -->
