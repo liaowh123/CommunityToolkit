@@ -24,6 +24,7 @@ namespace CommunityToolkit示例.ViewModel
         {
             int a= 1;//待定
             int b= 2;
+            int c = 3;
         }
     }
 
