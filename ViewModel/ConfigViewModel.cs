@@ -23,6 +23,7 @@ namespace CommunityToolkit示例.ViewModel
         private void SaveConfig()
         {
             int a= 1;//待定
+            int b= 2;
         }
     }
 
