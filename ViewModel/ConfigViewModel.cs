@@ -22,7 +22,9 @@ namespace CommunityToolkit示例.ViewModel
         [RelayCommand]
         private void SaveConfig()
         {
-            ;
+            int a= 1;//待定
+            int b= 2;
+            int c = 3;
         }
     }
 
