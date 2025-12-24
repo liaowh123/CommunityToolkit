@@ -10,18 +10,18 @@ namespace CommunityToolkit示例
     /// </summary>
     public partial class App : Application
     {
-        public static AppSettings Settings { get; private set; }
+        public static AppSettings? Settings { get; private set; }
 
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            base.OnStartup(e);
+        //protected override void OnStartup(StartupEventArgs e)
+        //{
+        //    base.OnStartup(e);
 
-            var config = new ConfigurationBuilder()
-                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .Build();           
-            Settings = config.GetSection("AppSettings").Get<AppSettings>();
-        }
+        //    var config = new ConfigurationBuilder()
+        //        .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+        //        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+        //        .Build();           
+        //    Settings = config.GetSection("AppSettings").Get<AppSettings>();
+        //}
     }
 
 }
